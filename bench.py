@@ -3,7 +3,7 @@
 Chạy mặc định:
     python bench.py
 
-Chọn embedding backend qua biến môi trường EMBEDDING_PROVIDER:
+Mặc định dùng LocalEmbedder. Có thể đổi backend qua EMBEDDING_PROVIDER:
     EMBEDDING_PROVIDER=local | openai | gemini | mock
 """
 
@@ -115,7 +115,7 @@ class CachedEmbedder:
 def select_embedder() -> Callable[[str], list[float]]:
     """Khởi tạo embedding backend; mặc định dùng mock để luôn chạy được."""
     load_dotenv(override=False)
-    provider = os.getenv("EMBEDDING_PROVIDER", "mock").strip().lower()
+    provider = os.getenv("EMBEDDING_PROVIDER", "local").strip().lower()
 
     try:
         if provider == "local":

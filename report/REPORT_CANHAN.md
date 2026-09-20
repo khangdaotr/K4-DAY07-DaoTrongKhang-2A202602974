@@ -81,18 +81,18 @@ Vượt qua bộ kiểm thử là điều kiện tính điểm phần này.
 
 ## 4. Dự đoán độ tương tự (Similarity Predictions) — Cá nhân (5 điểm)
 
-**Embedding backend:** `MockEmbedder` (fallback mặc định, không mã hóa ngữ nghĩa).
+**Embedding backend:** `LocalEmbedder` với model `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` (vector được chuẩn hóa).
 
 | Cặp | Câu A | Câu B | Dự đoán | Điểm thực tế | Đúng? |
 |------|-----------|-----------|---------|--------------|-------|
-| 1 | Người mua có thể yêu cầu hoàn tiền khi sản phẩm bị lỗi. | Khách hàng được quyền đề nghị hoàn tiền nếu hàng hóa bị hư hỏng. | Cao | -0.111435 | Không |
-| 2 | Người bán phải đóng gói sản phẩm đúng quy định vận chuyển. | Nhà bán hàng cần đóng gói kiện hàng theo hướng dẫn giao nhận của Shopee. | Cao | -0.045111 | Không |
-| 3 | Shopee xử lý khiếu nại trong vòng bảy ngày làm việc. | Người bán phải phản hồi yêu cầu hoàn tiền trong hai ngày lịch. | Thấp | -0.206291 | Có |
-| 4 | Sản phẩm phải còn ít nhất ba mươi phần trăm thời hạn sử dụng. | Thực phẩm sắp hết hạn cần ghi rõ ngày hết hạn trong mô tả. | Cao | -0.029426 | Không |
-| 5 | Người mua có thể yêu cầu trả hàng trên ứng dụng Shopee. | Python là một ngôn ngữ lập trình bậc cao. | Thấp | 0.039609 | Có |
+| 1 | Người mua có thể yêu cầu hoàn tiền khi sản phẩm bị lỗi. | Khách hàng được quyền đề nghị hoàn tiền nếu hàng hóa bị hư hỏng. | Cao | 0.871968 | Có |
+| 2 | Người bán phải đóng gói sản phẩm đúng quy định vận chuyển. | Nhà bán hàng cần đóng gói kiện hàng theo hướng dẫn giao nhận của Shopee. | Cao | 0.775356 | Có |
+| 3 | Shopee xử lý khiếu nại trong vòng bảy ngày làm việc. | Người bán phải phản hồi yêu cầu hoàn tiền trong hai ngày lịch. | Thấp | 0.422857 | Có |
+| 4 | Sản phẩm phải còn ít nhất ba mươi phần trăm thời hạn sử dụng. | Thực phẩm sắp hết hạn cần ghi rõ ngày hết hạn trong mô tả. | Cao | 0.165655 | Không |
+| 5 | Người mua có thể yêu cầu trả hàng trên ứng dụng Shopee. | Python là một ngôn ngữ lập trình bậc cao. | Thấp | 0.047819 | Có |
 
 **Kết quả nào bất ngờ nhất? Điều này nói gì về cách embeddings biểu diễn ý nghĩa?**
-> Bất ngờ nhất là cặp 1 và 2 có ý nghĩa gần như tương đương nhưng lại nhận điểm âm, trong khi cặp 5 hoàn toàn khác chủ đề lại có điểm dương. Nguyên nhân là thí nghiệm đang dùng MockEmbedder, vốn tạo vector giả ngẫu nhiên từ mã băm MD5 nên chỉ phù hợp để kiểm thử cấu trúc chương trình, không thể hiện quan hệ ngữ nghĩa; muốn đánh giá chính xác cần dùng mô hình embedding đa ngôn ngữ thực tế.
+> Bất ngờ nhất là cặp 4 cùng nói về hạn sử dụng nhưng chỉ đạt `0.165655`; hai câu liên quan nhưng tập trung vào hai quy định khác nhau nên model không xem chúng là diễn đạt tương đương. Ngược lại, cặp 1 và 2 đạt điểm cao, còn cặp Shopee–Python gần 0, cho thấy embedding đa ngôn ngữ biểu diễn quan hệ ngữ nghĩa hợp lý hơn mock.
 
 ---
 
@@ -100,19 +100,21 @@ Vượt qua bộ kiểm thử là điều kiện tính điểm phần này.
 
 Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân của bạn trong gói `src`. **5 câu hỏi này phải trùng với các thành viên cùng nhóm** (xem `REPORT_NHOM.md`).
 
-**Cấu hình lượt chạy:** `MockEmbedder`, `RecursiveChunker(chunk_size=1800)`, 171 chunks từ 7 tài liệu. Kết quả dưới đây được chấm ở mức nội dung: `doc_id` phải thuộc gold và chunk phải chứa chuỗi `anchor`. Do mock chỉ sinh vector giả từ MD5, các score dưới đây chủ yếu phản ánh nhiễu và không được dùng để kết luận chất lượng ngữ nghĩa của chiến lược chunking.
+**Cấu hình lượt chạy:** `LocalEmbedder` với model `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`, `RecursiveChunker(chunk_size=1800)`, 171 chunks từ 7 tài liệu. Kết quả được chấm ở mức nội dung: `doc_id` phải thuộc gold và chunk phải chứa chuỗi `anchor`; đúng ở Top-1 được 2 điểm, đúng ở Top-2/3 được 1 điểm, vắng khỏi Top-3 được 0 điểm.
 
 | # | Câu hỏi (Query) | Top-1 Chunk truy xuất được (tóm tắt) | Điểm Score | Có liên quan không? (Relevant) | Câu trả lời của Agent (tóm tắt) |
 |---|-------|--------------------------------|-------|-----------|------------------------|
-| 1 | Mua hàng trên Shopee Mall, sau khi yêu cầu trả hàng được chấp thuận thì phải gửi trả sản phẩm trong bao nhiêu ngày? | `77245#6`: thông tin chung về đơn vị vận chuyển và theo dõi hành trình giao nhận; không chứa mốc 06 ngày. | 0.339744 | Không | Ngữ cảnh Top-3 không chứa đáp án, nên Agent phải thông báo không tìm thấy đủ thông tin thay vì suy đoán. |
-| 2 | Hàng bị hư hại trong quá trình vận chuyển thì phải khiếu nại trong vòng bao nhiêu ngày? | `77250#13`: khuyến cáo Người Mua kiểm tra bao bì khi nhận hàng; chưa chứa mốc khiếu nại 03 ngày. | 0.225098 | Không | Chunk đúng `77250#8` nằm ở Top-3, cho biết Người Bán phải khiếu nại trong 03 ngày từ khi chuyển hoàn thành công. |
-| 3 | Người mua được yêu cầu trả hàng/hoàn tiền trong những trường hợp nào? | `77243#50`: điều khoản về biện pháp trừng phạt theo quốc gia/vùng lãnh thổ, không liên quan đến điều kiện trả hàng. | 0.405059 | Không | Top-3 không chứa danh sách trường hợp trả hàng/hoàn tiền nên Agent không đủ căn cứ trả lời. |
-| 4 | Quy trình giải quyết tranh chấp của Shopee gồm mấy bước và Shopee đưa ra hướng giải quyết trong bao lâu? | `77251#0`: phần mở đầu Chính sách Trả hàng và Hoàn tiền, không chứa quy trình bốn bước. | 0.329215 | Không | Top-3 không chứa anchor về 07 ngày làm việc nên Agent không đủ căn cứ trả lời chính xác. |
-| 5 | Những nội dung nào bị nghiêm cấm đăng bán trên Shopee? | `77243#43`: giới hạn trách nhiệm của Shopee đối với sản phẩm, không chứa danh sách nội dung cấm. | 0.320313 | Không | Top-3 không chứa danh sách và anchor “bí mật quốc gia”, nên Agent không thể liệt kê đầy đủ. |
+| 1 | Mua hàng trên Shopee Mall, sau khi yêu cầu trả hàng được chấp thuận thì phải gửi trả sản phẩm trong bao nhiêu ngày? | `77262#8`: cùng tài liệu Mall nhưng nói về Shopee gửi hàng hoàn lại cho Người Bán, không chứa mốc 06 ngày dành cho Người Mua. | 0.823048 | Không | Top-3 đúng chủ đề nhưng sai section và không chứa anchor, nên Agent không đủ căn cứ trả lời mốc 06 ngày. |
+| 2 | Hàng bị hư hại trong quá trình vận chuyển thì phải khiếu nại trong vòng bao nhiêu ngày? | `77250#9`: thời gian Shopee xử lý khiếu nại tối đa 10 ngày, không phải hạn Người Bán gửi khiếu nại. | 0.610803 | Không | Chunk đúng `77250#8` nằm ở Top-3: hàng hoàn bị hư hại/không nguyên vẹn phải được khiếu nại trong 03 ngày. |
+| 3 | Người mua được yêu cầu trả hàng/hoàn tiền trong những trường hợp nào? | `77251#10`: quy định mức hoàn tiền do Người Bán đề xuất, không chứa danh sách các trường hợp được yêu cầu trả hàng. | 0.730486 | Không | Top-3 không chứa anchor “sai kích cỡ, sai màu sắc”, nên Agent không đủ ngữ cảnh để liệt kê chính xác. |
+| 4 | Quy trình giải quyết tranh chấp của Shopee gồm mấy bước và Shopee đưa ra hướng giải quyết trong bao lâu? | `77262#7`: thời hạn xử lý yêu cầu trả hàng Shopee Mall, không phải quy trình tranh chấp bốn bước. | 0.706448 | Không | Chunk đúng `77265#1` đứng Top-2: quy trình gồm 4 bước và thời hạn là 07 ngày làm việc từ khi nhận đủ hồ sơ. |
+| 5 | Những nội dung nào bị nghiêm cấm đăng bán trên Shopee? | `77262#4`: danh sách sản phẩm bị loại trừ khỏi trả hàng Shopee Mall, không phải danh sách nội dung cấm đăng bán. | 0.685688 | Không | Top-3 không chứa anchor “bí mật quốc gia”, nên Agent không thể liệt kê đầy đủ các nội dung bị cấm. |
 
-**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** 1 / 5
+**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** 2 / 5 — tổng điểm retrieval theo thang 2/1/0 là **2/10**.
 
-**Failure case tiêu biểu:** Q5 lấy được nội dung cùng chủ đề đăng bán nhưng sai section; các chunk Top-3 không chứa anchor “bí mật quốc gia”, nên đúng chủ đề không đồng nghĩa với trả lời được câu hỏi. Nguyên nhân chính của lượt chạy này là `MockEmbedder` không mã hóa ngữ nghĩa; hướng cải thiện là dùng embedding đa ngôn ngữ thật và thử chunk theo heading hoặc overlap để tăng cơ hội giữ trọn danh sách.
+**Failure case tiêu biểu:** Q1 lấy đúng tài liệu `77262` ở Top-1 và Top-2 nhưng sai section; các chunk này nói về thời hạn xử lý/gửi hàng hoàn, không chứa mốc “06 (sáu) ngày lịch” mà câu hỏi cần. Cosine ưu tiên độ giống chủ đề hơn mật độ thông tin trả lời; hướng cải thiện là chunk theo heading nhỏ hơn, thêm overlap hoặc rerank theo từ khóa/mốc thời gian.
+
+**A/B metadata filter:** Với Q2, Top-3 của cả ba chiến lược giống hệt nhau giữa lượt không filter và lượt `audience=seller`. Filter chưa tạo lợi ích vì kết quả không lọc vốn đã hoàn toàn thuộc tài liệu seller `77250`; do đó câu hỏi/metadata hiện tại chưa tạo được phép thử A/B có sức phân biệt.
 
 **Điều hay nhất tôi học được từ thành viên khác / nhóm khác (qua demo):**
 > Tôi học được rằng không nên đánh giá retrieval chỉ bằng việc `doc_id` đúng xuất hiện trong Top-3, vì chunk thuộc đúng tài liệu vẫn có thể nằm sai section và không chứa câu trả lời. Cần kiểm tra thêm anchor trong nội dung, đồng thời so sánh có/không có metadata filter để thấy rõ sự đánh đổi giữa precision và recall.
@@ -123,9 +125,9 @@ Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân củ
 
 | Tiêu chí | Điểm tự đánh giá |
 |----------|-------------------|
-| Khởi động (Warm-up) | / 5 |
-| Hướng tiếp cận của tôi (My Approach) | / 10 |
-| Hoàn thiện code (Core Implementation — tests) | / 30 |
-| Dự đoán độ tương tự (Similarity Predictions) | / 5 |
-| Kết quả truy xuất của tôi (Competition Results) | / 10 |
-| **Tổng phần cá nhân** | **/ 60** |
+| Khởi động (Warm-up) | 5 / 5 |
+| Hướng tiếp cận của tôi (My Approach) | 10 / 10 |
+| Hoàn thiện code (Core Implementation — tests) | 30 / 30 |
+| Dự đoán độ tương tự (Similarity Predictions) | 5 / 5 |
+| Kết quả truy xuất của tôi (Competition Results) | 2 / 10 |
+| **Tổng phần cá nhân** | **52 / 60** |
