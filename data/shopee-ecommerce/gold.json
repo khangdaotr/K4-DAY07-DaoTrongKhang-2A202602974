@@ -1,0 +1,120 @@
+{
+  "corpus": "data/shopee-ecommerce",
+  "chunk_id_scheme": "{doc_id}_{start_offset}_{end_offset} — offset ký tự trên phần thân tài liệu (sau YAML frontmatter), nửa khoảng [start, end)",
+  "hit_rule": "chunk [s,e) của tài liệu X trúng vùng gold khi tồn tại span của X với s < end and e > start; đồng thời ngữ cảnh top-k phải chứa chuỗi anchor",
+  "scoring": "2 điểm nếu gold ở top-1 và ngữ cảnh chứa anchor; 1 điểm nếu gold ở top-2/3; 0 nếu vắng khỏi top-3",
+  "queries": [
+    {
+      "id": "Q1",
+      "question_type": "tra_so_lieu",
+      "query": "Mua hàng trên Shopee Mall, sau khi yêu cầu trả hàng được chấp thuận thì phải gửi trả sản phẩm trong bao nhiêu ngày?",
+      "gold_answer": "06 ngày lịch kể từ ngày yêu cầu trả hàng/hoàn tiền được chấp thuận; phải đóng gói trong hoặc kèm bao bì ban đầu và dán kèm Phiếu Trả Hàng do Shopee cung cấp.",
+      "gold_spans": [
+        {
+          "doc_id": "77262",
+          "start": 2628,
+          "end": 3865
+        }
+      ],
+      "anchor": "06 (sáu) ngày lịch",
+      "metadata_filter": null,
+      "gold_chunk_ids": [
+        "77262_2628_3865"
+      ],
+      "evidence": "1.2.     Sau khi Người Mua yêu cầu trả hàng/hoàn tiền, trừ trường hợp được “Hoàn Tiền Ngay”, Người Mua tại Shopee Mall phải hoàn trả Sản Phẩm đến Trung Tâm Xử Lý Trả Hàng của Shopee hoặc trả về Địa chỉ của Người Bán Shopee Mall - theo yêu cầu của Shopee tùy vào trường hợp cụ thể theo Chính sách của Shopee trong từng thời điểm trong vòng 06 (sáu) ngày lịch kể từ ngày yêu cầu trả hàng/hoàn tiền được chấp thuận. Khi hoàn trả Sản Phẩm đã mua tại Shopee Mall, Người Mua tại Shopee Mall phải đóng gói Sản Phẩm trong hoặc kèm theo bao bì gói bọc ban đầu, dán kèm phiếu trả hàng được Shopee cung cấp cho Người Mua (“Phiếu Trả Hàng”). Phiếu Trả Hàng được cung cấp bởi Shopee thông qua Trang Web, SMS, email hoặc các phương tiện khác. Phiếu Trả Hàng cũng bao gồm địa chỉ mà Sản Phẩm của Shopee Mall sẽ được gửi trả lại. Shopee có quyền từ chối bất kỳ Yêu Cầu Trả Hàng/Hoàn Tiền nào được hoàn thành sau Thời Gian Yêu Cầu Trả Hàng, hoặc Sản Phẩm mà Người Mua yêu cầu hoàn trả không được gửi đến Trung Tâm Xử Lý Trả Hàng của Shopee hoặc trả về Địa chỉ của Người Bán Shopee Mall - theo yêu cầu của Shopee tùy vào trường hợp cụ thể theo Chính sách của Shopee trong từng thời điểm trong vòng 06 (sáu) ngày lịch kể từ ngày yêu cầu trả hàng/hoàn tiền:"
+    },
+    {
+      "id": "Q2",
+      "question_type": "tra_so_lieu",
+      "query": "Hàng bị hư hại trong quá trình vận chuyển thì phải khiếu nại trong vòng bao nhiêu ngày?",
+      "gold_answer": "Với Người Bán: hàng bị hư hại/không còn nguyên vẹn khi hoàn trả phải khiếu nại trong 03 ngày, hàng bị thất lạc khi hoàn trả trong 07 ngày, tính từ khi đơn được cập nhật trạng thái chuyển hoàn thành công. Với Người Mua thì mốc là 15 ngày theo Chính sách Trả hàng và Hoàn tiền — đây là lý do câu này cần lọc audience.",
+      "gold_spans": [
+        {
+          "doc_id": "77250",
+          "start": 14001,
+          "end": 14778
+        }
+      ],
+      "anchor": "03 ngày",
+      "metadata_filter": {
+        "audience": "seller"
+      },
+      "note": "Cau duy nhat can metadata_filter: 77250 (seller) va 77251 (buyer) cung tu vung nhung khac dap an.",
+      "gold_chunk_ids": [
+        "77250_14001_14778"
+      ],
+      "evidence": "Khiếu nại vận chuyển với đơn Giao không thành công (dành cho Người Bán):\n\n   i. Đơn được cập nhật trạng thái chuyển hoàn thành công:\n\n- Hàng bị thất lạc khi hoàn trả: trong vòng 07 ngày sau khi đơn hàng được cập nhật trạng thái chuyển hoàn thành công. \n\n- Hàng bị hư hại/ không còn nguyên vẹn khi hoàn trả: trong vòng 03 ngày sau khi đơn hàng được cập nhật trạng thái chuyển hoàn thành công.\n\n   ii. Đơn được cập nhật trạng thái chuyển hoàn không thành công: Đơn sẽ được lưu tại kho của đơn vị vận chuyển và xử lý theo quy định. Nếu quá hạn 30 ngày (riêng đối với kênh Hỏa tốc là 21 ngày) mà Người Bán không liên hệ với Shopee để xử lý đơn hàng, Shopee miễn trừ trách nhiệm, và sẽ không giải quyết bất kỳ khiếu nại, yêu cầu bồi thường nào phát sinh sau thời hạn này.\n\n   c."
+    },
+    {
+      "id": "Q3",
+      "question_type": "hoi_dieu_kien",
+      "query": "Người mua được yêu cầu trả hàng/hoàn tiền trong những trường hợp nào?",
+      "gold_answer": "Không nhận được hàng / không nhận đủ hàng / nhận phải hàng giả, hàng nhái; sản phẩm bị lỗi hoặc hư hại khi vận chuyển; người bán giao sai sản phẩm (sai kích cỡ, sai màu sắc); hàng khác biệt rõ rệt so với mô tả; sản phẩm hết hạn sử dụng; người bán tự thỏa thuận đồng ý cho trả hàng; hàng còn nguyên vẹn nguyên bao bì nhưng người mua không còn nhu cầu (Trả hàng COM).",
+      "gold_spans": [
+        {
+          "doc_id": "77251",
+          "start": 2180,
+          "end": 3085
+        }
+      ],
+      "anchor": "sai kích cỡ, sai màu sắc",
+      "metadata_filter": null,
+      "gold_chunk_ids": [
+        "77251_2180_3085"
+      ],
+      "evidence": "3.1. Người Mua đồng ý rằng Người Mua chỉ có thể yêu cầu trả hàng/hoàn tiền trong các trường hợp sau:\n\nNgười Mua đã thanh toán bằng các phương thức thanh toán hợp lệ và trực tiếp trên Trang Shopee nhưng (i) không nhận được Sản Phẩm, hoặc (ii) không nhận được toàn bộ các Sản Phẩm đã đặt, hoặc (iii) nhận được Sản Phẩm là hàng giả, hàng nhái;\n\nSản Phẩm bị lỗi hoặc bị hư hại trong quá trình vận chuyển;\n\nNgười Bán giao sai Sản Phẩm cho Người Mua (ví dụ: sai kích cỡ, sai màu sắc, v.v);\n\nSản Phẩm mà Người Mua nhận được khác biệt một cách rõ rệt so với thông tin mà Người Bán cung cấp trong mục mô tả sản phẩm;\n\nSản Phẩm hết hạn sử dụng;\n\nNgười Bán đã tự thỏa thuận và đồng ý cho Người Mua trả hàng (tuy nhiên Shopee sẽ cần Người Bán xác nhận lại những thỏa thuận này).\n\nSản Phẩm ở trạng thái nguyên vẹn và nguyên bao bì nhưng Người Mua không còn nhu cầu (\"Trả hàng COM\"), theo yêu cầu tại Điều 4 dưới đây."
+    },
+    {
+      "id": "Q4",
+      "question_type": "hoi_quy_trinh",
+      "query": "Quy trình giải quyết tranh chấp của Shopee gồm mấy bước và Shopee đưa ra hướng giải quyết trong bao lâu?",
+      "gold_answer": "4 bước. Với tranh chấp không phải khiếu nại Trả hàng/Hoàn tiền, Shopee đưa ra hướng giải quyết trong vòng 07 ngày làm việc kể từ ngày nhận đủ thông tin/tài liệu liên quan; vụ việc phức tạp thì thời hạn kéo dài hơn.",
+      "gold_spans": [
+        {
+          "doc_id": "77265",
+          "start": 907,
+          "end": 2658
+        },
+        {
+          "doc_id": "77245",
+          "start": 14121,
+          "end": 15870
+        }
+      ],
+      "anchor": "trong vòng 07 ngày làm việc kể từ ngày nhận được đầy đủ",
+      "metadata_filter": null,
+      "note": "Quy Che Hoat Dong 77245 chep lai nguyen khoi quy trinh nay cua 77265 nen ca hai deu la vung gold hop le.",
+      "gold_chunk_ids": [
+        "77265_907_2658",
+        "77245_14121_15870"
+      ],
+      "evidence": "Bước 1: Để tạo khiếu nại yêu cầu Trả Hàng/Hoàn Tiền tới Shopee, Người Mua cần bấm khiếu nại ngay trong ứng dụng Shopee/website www.shopee.vn, mục “Đơn Mua”. Hệ thống sẽ ghi nhận khiếu nại này của Người Mua.. Các tranh chấp không phải là khiếu nại Trả Hàng/Hoàn Tiền có thể được gửi đến cho Shopee thông qua các phương thức liên hệ TẠI ĐÂY.\n\nBước 2: Bộ phận giải quyết khiếu nại của Shopee sẽ tiếp nhận các yêu cầu của người khiếu nại/các bên tranh chấp. Shopee sẽ có biện pháp cụ thể hỗ trợ người khiếu nại/các bên tranh chấp để giải quyết tùy theo tính chất và mức độ của vụ việc.\n\nBước 3: Khiếu nại Trả Hàng/Hoàn Tiền được xử lý theo Chính Sách Trả Hàng Và Hoàn Tiền của Shopee. Đối với các tranh chấp không phải là khiếu nại Trả Hàng/Hoàn Tiền, Shopee yêu cầu các bên tranh chấp cung cấp đầy đủ thông tin/tài liệu liên quan đến vụ việc, và đưa ra hướng giải quyết dựa trên các thông tin/tài liệu thu thập được trong vòng 07 ngày làm việc kể từ ngày nhận được đầy đủ các thông tin/tài liệu có liên quan đến vụ việc. Trong trường hợp vụ việc có nhiều thông tin, tình tiết phức tạp thì thời hạn giải quyết sẽ được kéo dài hơn.\n\nBước 4: Trong trường hợp nằm ngoài khả năng và thẩm quyền của Sàn Giao Dịch Thương Mại Điện Tử, Shopee sẽ yêu cầu các bên tranh chấp đưa vụ việc ra giải quyết tại cơ quan nhà nước có thẩm quyền theo quy định của pháp luật. Shopee tôn trọng và nghiêm túc thực hiện các quy định của pháp luật về bảo vệ quyền lợi của khách hàng (người tiêu dùng). Các Nhà Bán Hàng trên sàn Giao Dịch Thương Mại Điện Tử Shopee cần cung cấp đầy đủ, chính xác, trung thực và chi tiết các thông tin/tài liệu liên quan đến sản phẩm. Mọi hành vi lừa đảo, gian lận trong kinh doanh đều bị lên án và phải chịu hoàn toàn trách nhiệm trước pháp luật."
+    },
+    {
+      "id": "Q5",
+      "question_type": "liet_ke",
+      "query": "Những nội dung nào bị nghiêm cấm đăng bán trên Shopee?",
+      "gold_answer": "Nội dung phản động, chống phá, bài xích tôn giáo, khiêu dâm, bạo lực, xâm phạm chủ quyền/an ninh quốc gia; thông tin rác làm mất uy tín dịch vụ Shopee; xúc phạm người khác; tuyên truyền điều pháp luật nghiêm cấm; quảng cáo sản phẩm độc hại; văn hóa phẩm đồi trụy; tài liệu bí mật quốc gia, bí mật nhà nước, bí mật kinh doanh, bí mật cá nhân; và các sản phẩm thuộc Danh sách cấm/hạn chế của Shopee.",
+      "gold_spans": [
+        {
+          "doc_id": "77246",
+          "start": 1279,
+          "end": 2847
+        },
+        {
+          "doc_id": "77245",
+          "start": 52118,
+          "end": 52876
+        }
+      ],
+      "anchor": "bí mật quốc gia",
+      "metadata_filter": null,
+      "note": "Quy Che Hoat Dong 77245 chep lai danh muc noi dung cam nay cua 77246.",
+      "gold_chunk_ids": [
+        "77246_1279_2847",
+        "77245_52118_52876"
+      ],
+      "evidence": "2. Các nội dung không được phép đăng bán\n\nNgười Bán được quyền đăng các sản phẩm lên Shopee nhằm mục đích kinh doanh. Tuy nhiên, NGHIÊM CẤM đăng tải những sản phẩm có nội dung sau đây:\n\na. Phản động, chống phá, bài xích tôn giáo, khiêu dâm, bạo lực, đi ngược lại thuần phong mỹ tục, truyền thống và văn hóa Việt Nam, xâm phạm chủ quyền, toàn vẹn lãnh thổ, an ninh quốc gia của Việt Nam;\n\nb. Đăng thông tin rác, phá rối hay làm mất uy tín của các dịch vụ do Shopee cung cấp;\n\nc. Xúc phạm, khích bác đến người khác dưới bất kỳ hình thức nào;\n\nd. Tuyên truyền về những thông tin mà pháp luật nghiêm cấm như: sử dụng heroin, thuốc lắc, giết người, cướp của,vv… (Ví dụ: sản phẩm in hình lá cần sa, shisha);\n\ne. Khuyến khích, quảng cáo cho việc sử dụng các sản phẩm độc hại (VD: thuốc lá, rượu, cần sa);\n\nf. Các sản phẩm văn hóa đồi trụy (băng đĩa, sách báo, vật phẩm); \n\ng. Tài liệu bí mật quốc gia, bí mật nhà nước, bí mật kinh doanh, bí mật cá nhân;\n\nh. Con người và/hoặc các bộ phận của cơ thể con người;\n\ni. Động vật và chế phẩm từ động vật (bao gồm động vật hoang dã) như: chó, mèo, cá, ốc, chuột, nhím, ốc mượn hồn, hamster, ngà voi, sừng tê giác, cao hổ, da/ lông động vật,...)\n\nj. Những sản phẩm có tính chất phân biệt chủng tộc, xúc phạm đến dân tộc hoặc quốc gia nào đó;\n\nk. Hạn chế tối đa những sản phẩm mang tính cá nhân (như hình cá nhân, hình ảnh của gia đình, hình ảnh của con cái);\n\nl. Vi phạm quyền sở hữu trí tuệ và/hoặc bất kỳ nhãn hiệu hàng hóa nào của bất kỳ bên thứ ba nào;\n\nm. Các sản phẩm nằm trong Danh sách sản phẩm bị cấm/hạn chế của Shopee."
+    }
+  ]
+}
